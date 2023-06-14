@@ -2,6 +2,7 @@ import json
 from flask import Flask, jsonify, request
 import pandas as pd
 import cloudpickle as cp
+from cloudevents.http import from_http
 
 application = Flask(__name__)
 pipeline = cp.load(open('pipeline.pkl', 'rb'))
@@ -24,6 +25,12 @@ def status():
 
 @application.route('/predictions', methods=['POST'])
 def create_prediction():
+    event = from_http(request.headers, request.get_data())
+    print(
+        f"Found {event['id']} from {event['source']} with type "
+        f"{event['type']} and specversion {event['specversion']}"
+    )
+
     data = request.data or '{}'
     body = json.loads(data)
     return jsonify(predict(body))
