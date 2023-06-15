@@ -1,5 +1,4 @@
 import json
-import time
 import random
 
 from flask import Flask, jsonify, request
@@ -21,7 +20,7 @@ def status():
 
 
 @application.route('/pos', methods=['POST'])
-def create_prediction():
+def pos():
     data = request.data or '{}'
     body = json.loads(data)
 
