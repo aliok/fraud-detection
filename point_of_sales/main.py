@@ -13,19 +13,18 @@ POD_NAME = os.environ.get('POD_NAME')
 application = Flask(__name__)
 
 
-@application.route('/')
 @application.route('/status')
 def status():
     return jsonify({'status': 'ok'})
 
 
-@application.route('/pos', methods=['POST'])
+@application.route('/', methods=['POST'])
 def pos():
     data = request.data or '{}'
     body = json.loads(data)
 
     attributes = {
-        "type": "transaction.created",
+        "type": "com.example.transaction.created",
         "source": POD_NAME,
     }
     data = {

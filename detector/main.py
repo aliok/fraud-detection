@@ -3,7 +3,10 @@ from flask import Flask, jsonify, request
 import pandas as pd
 import cloudpickle as cp
 from cloudevents.http import from_http
+from cloudevents.conversion import to_structured
+import os
 
+POD_NAME = os.environ.get('POD_NAME')
 application = Flask(__name__)
 pipeline = cp.load(open('pipeline.pkl', 'rb'))
 
@@ -13,18 +16,16 @@ def predict(args_dict):
          'merchant_id': args_dict.get('merchant_id'), 'trans_type': args_dict.get('trans_type'),
          'foreign': args_dict.get('foreign'), 'interarrival': args_dict.get('interarrival')}
     df = pd.DataFrame(d, index=[0])
-    prediction = pipeline.predict(df)[0]
-    return {'prediction': prediction}
+    return pipeline.predict(df)[0]
 
 
-@application.route('/')
 @application.route('/status')
 def status():
     return jsonify({'status': 'ok'})
 
 
-@application.route('/predictions', methods=['POST'])
-def create_prediction():
+@application.route('/', methods=['POST'])
+def detect():
     event = from_http(request.headers, request.get_data())
     print(
         f"Found {event['id']} from {event['source']} with type "
@@ -33,11 +34,19 @@ def create_prediction():
 
     data = request.data or '{}'
     body = json.loads(data)
-    return jsonify(predict(body))
+    prediction = predict(body)
 
+    event.data['legitimacy'] = prediction
+
+    event['type'] = 'com.example.transaction.checked'
+    event['source'] = POD_NAME
+
+    headers, body = to_structured(event)
+
+    return body, 200, headers
 
 # if __name__ == '__main__':
-#     # 'online', 'contactless', 'chip_and_pin', 'manual', 'swipe'
+#
 #     #
 #
 #     my_req = {"user_id": 1698,

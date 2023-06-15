@@ -2,3 +2,9 @@
 python3 -m venv venv
 source venv/bin/activate
 ```
+
+Fields:
+
+```
+trans_type:  'online', 'contactless', 'chip_and_pin', 'manual', 'swipe'
+```
