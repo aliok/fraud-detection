@@ -1,5 +1,6 @@
 import json
 import time
+import random
 
 from flask import Flask, jsonify, request
 from cloudevents.http import CloudEvent
@@ -11,9 +12,6 @@ BROKER_URL = os.environ.get('BROKER_URL')
 POD_NAME = os.environ.get('POD_NAME')
 
 application = Flask(__name__)
-
-# map <merchant_id, datetime>
-TxnTimes = {}
 
 
 @application.route('/')
@@ -37,14 +35,14 @@ def create_prediction():
         "merchant_id": body["merchant_id"],
         "trans_type": body["trans_type"],
     }
-    now = time.time_ns() // 1_000_000
-    if body["merchant_id"] in TxnTimes:
-        data["interarrival"] = now - TxnTimes[body["merchant_id"]]
+    # 1/4 of the time, we'll send a short interarrival time
+    if random.random() < 0.25:
+        data["interarrival"] = random.randint(1, 25)
     else:
-        data["interarrival"] = 10000000
-    TxnTimes[body["merchant_id"]] = now
+        data["interarrival"] = random.randint(1000, 1000000)
 
-    if int(body["merchant_id"]) % 2 == 0:
+    # 1/4 of the time, we'll mark it as foreign
+    if random.random() < 0.25:
         data["foreign"] = "True"
     else:
         data["foreign"] = "False"
