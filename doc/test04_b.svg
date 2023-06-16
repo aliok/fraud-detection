@@ -7,9 +7,9 @@
     </defs>
     <g>
         <g id="cell-_XGmO1RP6S3SkGnC12u7-9">
-            <path d="M 74.48 77.72 L 74.48 190.69 L 153.01 190.69" fill="none" stroke="rgb(0, 0, 0)"
+            <path d="M 74.48 77.72 L 74.5 190.3 L 152.99 190.33" fill="none" stroke="rgb(0, 0, 0)"
                   stroke-miterlimit="10" pointer-events="stroke"/>
-            <path d="M 158.26 190.69 L 151.26 194.19 L 153.01 190.69 L 151.26 187.19 Z" fill="rgb(0, 0, 0)"
+            <path d="M 158.24 190.33 L 151.24 193.83 L 152.99 190.33 L 151.24 186.83 Z" fill="rgb(0, 0, 0)"
                   stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="all"/>
         </g>
         <g id="cell-_XGmO1RP6S3SkGnC12u7-10"
@@ -42,8 +42,8 @@
         <g id="cell-_XGmO1RP6S3SkGnC12u7-18"
            content="&lt;object label=&quot;&quot; event-flow-viz-path-name=&quot;internet-to-pos&quot;/&gt;"
            data-label="" data-event-flow-viz-path-name="internet-to-pos">
-            <path d="M 99.1 77 L 99.1 78.69 L 100 172.69 L 150 172.68" fill="none" stroke="#ff00ff"
-                  stroke-miterlimit="10" pointer-events="stroke"/>
+            <path d="M 99.1 77 L 99.1 78.7 L 100 172.7 L 150 172.68" fill="none" stroke="#ff00ff" stroke-miterlimit="10"
+                  pointer-events="stroke"/>
         </g>
         <g id="cell-yEWCCMjmXcFI0Ywvs4I3-3">
             <rect x="415.63" y="0" width="180.28" height="492.68" rx="27.04" ry="27.04" fill="rgb(255, 255, 255)"
@@ -75,21 +75,21 @@
                    preserveAspectRatio="none" pointer-events="none"/>
         </g>
         <g id="cell-yEWCCMjmXcFI0Ywvs4I3-41">
-            <path d="M 319.68 187.53 L 367.79 187.52 L 409.27 187.69" fill="none" stroke="rgb(0, 0, 0)"
+            <path d="M 319.68 187.53 L 367.8 187.5 L 409.27 187.68" fill="none" stroke="rgb(0, 0, 0)"
                   stroke-miterlimit="10" pointer-events="none"/>
-            <path d="M 414.52 187.71 L 407.5 191.18 L 409.27 187.69 L 407.53 184.18 Z" fill="rgb(0, 0, 0)"
+            <path d="M 414.52 187.71 L 407.5 191.18 L 409.27 187.68 L 407.53 184.18 Z" fill="rgb(0, 0, 0)"
                   stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="none"/>
         </g>
         <g id="cell-yEWCCMjmXcFI0Ywvs4I3-76">
-            <path d="M 595.92 32.52 L 617.93 32.48 L 633.63 32.62" fill="none" stroke="rgb(0, 0, 0)"
-                  stroke-miterlimit="10" pointer-events="none"/>
-            <path d="M 638.88 32.67 L 631.85 36.11 L 633.63 32.62 L 631.91 29.11 Z" fill="rgb(0, 0, 0)"
+            <path d="M 595.92 32.52 L 618 32.5 L 633.63 32.63" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10"
+                  pointer-events="none"/>
+            <path d="M 638.88 32.67 L 631.85 36.11 L 633.63 32.63 L 631.91 29.11 Z" fill="rgb(0, 0, 0)"
                   stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="none"/>
         </g>
         <g id="cell-yEWCCMjmXcFI0Ywvs4I3-85"
            content="&lt;object label=&quot;&quot; event-flow-viz-path-name=&quot;pos-to-trigger&quot;/&gt;"
            data-label="" data-event-flow-viz-path-name="pos-to-trigger">
-            <path d="M 320 171.18 L 500 171.17 L 500 32.69 L 640 32.68" fill="none" stroke="#ff00ff"
+            <path d="M 320 171.18 L 500 171.2 L 500 32.7 L 640 32.68" fill="none" stroke="#ff00ff"
                   stroke-miterlimit="10" pointer-events="none"/>
         </g>
         <g id="cell-_XGmO1RP6S3SkGnC12u7-3">
@@ -128,9 +128,9 @@
                    preserveAspectRatio="none" pointer-events="none"/>
         </g>
         <g id="cell-yEWCCMjmXcFI0Ywvs4I3-78">
-            <path d="M 747.5 32.68 L 808.76 32.69 L 842.19 32.51" fill="none" stroke="rgb(0, 0, 0)"
-                  stroke-miterlimit="10" pointer-events="none"/>
-            <path d="M 847.44 32.49 L 840.46 36.02 L 842.19 32.51 L 840.42 29.02 Z" fill="rgb(0, 0, 0)"
+            <path d="M 747.5 32.68 L 808.8 32.7 L 842.19 32.52" fill="none" stroke="rgb(0, 0, 0)" stroke-miterlimit="10"
+                  pointer-events="none"/>
+            <path d="M 847.44 32.49 L 840.46 36.02 L 842.19 32.52 L 840.42 29.02 Z" fill="rgb(0, 0, 0)"
                   stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="none"/>
         </g>
         <g id="cell-yEWCCMjmXcFI0Ywvs4I3-27">
@@ -166,7 +166,7 @@
         <g id="cell-jFwSVuXmzfNkv6zsEyJq-6"
            content="&lt;object label=&quot;&quot; event-flow-viz-path-name=&quot;trigger-to-fraud-detector&quot;/&gt;"
            data-label="" data-event-flow-viz-path-name="trigger-to-fraud-detector">
-            <path d="M 747.5 32.68 L 808.76 32.69 L 850.9 32.48" fill="none" stroke="#ff00ff" stroke-miterlimit="10"
+            <path d="M 747.5 32.68 L 808.8 32.7 L 850.9 32.48" fill="none" stroke="#ff00ff" stroke-miterlimit="10"
                   pointer-events="none"/>
         </g>
         <g id="cell-jFwSVuXmzfNkv6zsEyJq-12">
@@ -230,19 +230,19 @@
         <g id="cell-jFwSVuXmzfNkv6zsEyJq-18"
            content="&lt;object label=&quot;&quot; event-flow-viz-path-name=&quot;broker-to-logger-trigger&quot;/&gt;"
            data-label="" data-event-flow-viz-path-name="broker-to-logger-trigger">
-            <path d="M 570 227 L 605.03 227.03 L 640 226.68" fill="none" stroke="#ff00ff" stroke-miterlimit="10"
+            <path d="M 570 227 L 605 227 L 640 226.68" fill="none" stroke="#ff00ff" stroke-miterlimit="10"
                   pointer-events="none"/>
         </g>
         <g id="cell-jFwSVuXmzfNkv6zsEyJq-19">
-            <path d="M 850.45 132.68 L 722.97 132.69 L 600.84 132.54" fill="none" stroke="rgb(0, 0, 0)"
+            <path d="M 850.45 132.68 L 723 132.7 L 600.84 132.54" fill="none" stroke="rgb(0, 0, 0)"
                   stroke-miterlimit="10" pointer-events="none"/>
             <path d="M 595.59 132.53 L 602.6 129.04 L 600.84 132.54 L 602.59 136.04 Z" fill="rgb(0, 0, 0)"
                   stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="none"/>
         </g>
         <g id="cell-jFwSVuXmzfNkv6zsEyJq-20">
-            <path d="M 747.5 226.68 L 808.76 226.69 L 843.45 225.99" fill="none" stroke="rgb(0, 0, 0)"
+            <path d="M 747.5 226.68 L 808.8 226.7 L 843.45 225.99" fill="none" stroke="rgb(0, 0, 0)"
                   stroke-miterlimit="10" pointer-events="none"/>
-            <path d="M 848.7 225.89 L 841.77 229.53 L 843.45 225.99 L 841.63 222.53 Z" fill="rgb(0, 0, 0)"
+            <path d="M 848.7 225.89 L 841.78 229.53 L 843.45 225.99 L 841.63 222.53 Z" fill="rgb(0, 0, 0)"
                   stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="none"/>
         </g>
         <g id="cell-jFwSVuXmzfNkv6zsEyJq-22">
@@ -276,15 +276,15 @@
                    preserveAspectRatio="none" pointer-events="none"/>
         </g>
         <g id="cell-jFwSVuXmzfNkv6zsEyJq-24">
-            <path d="M 595.74 226.63 L 617.93 226.62 L 633.63 226.66" fill="none" stroke="rgb(0, 0, 0)"
+            <path d="M 595.74 226.63 L 618 226.6 L 633.63 226.66" fill="none" stroke="rgb(0, 0, 0)"
                   stroke-miterlimit="10" pointer-events="none"/>
-            <path d="M 638.88 226.68 L 631.87 230.16 L 633.63 226.66 L 631.89 223.16 Z" fill="rgb(0, 0, 0)"
+            <path d="M 638.88 226.68 L 631.87 230.15 L 633.63 226.66 L 631.89 223.15 Z" fill="rgb(0, 0, 0)"
                   stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="none"/>
         </g>
         <g id="cell-jFwSVuXmzfNkv6zsEyJq-25"
            content="&lt;object label=&quot;&quot; event-flow-viz-path-name=&quot;trigger-to-logger&quot;/&gt;"
            data-label="" data-event-flow-viz-path-name="trigger-to-logger">
-            <path d="M 747.5 226.68 L 808.76 226.69 L 849.28 225.86" fill="none" stroke="#ff00ff" stroke-miterlimit="10"
+            <path d="M 747.5 226.68 L 808.8 226.7 L 849.28 225.86" fill="none" stroke="#ff00ff" stroke-miterlimit="10"
                   pointer-events="none"/>
         </g>
         <g id="cell-jFwSVuXmzfNkv6zsEyJq-27">
@@ -384,13 +384,13 @@
         <g id="cell-jFwSVuXmzfNkv6zsEyJq-49"
            content="&lt;object label=&quot;&quot; event-flow-viz-path-name=&quot;broker-to-fraud-notifier-trigger&quot;/&gt;"
            data-label="" data-event-flow-viz-path-name="broker-to-fraud-notifier-trigger">
-            <path d="M 571 226 L 571.03 382.69 L 640 382.68" fill="none" stroke="#ff00ff" stroke-miterlimit="10"
+            <path d="M 571 226 L 571 382.7 L 640 382.68" fill="none" stroke="#ff00ff" stroke-miterlimit="10"
                   pointer-events="none"/>
         </g>
         <g id="cell-jFwSVuXmzfNkv6zsEyJq-50">
-            <path d="M 595.92 383.31 L 617.93 383.31 L 633.63 382.86" fill="none" stroke="rgb(0, 0, 0)"
+            <path d="M 595.92 383.31 L 618 383.3 L 633.63 382.86" fill="none" stroke="rgb(0, 0, 0)"
                   stroke-miterlimit="10" pointer-events="none"/>
-            <path d="M 638.88 382.71 L 631.99 386.41 L 633.63 382.86 L 631.79 379.41 Z" fill="rgb(0, 0, 0)"
+            <path d="M 638.88 382.71 L 631.98 386.41 L 633.63 382.86 L 631.79 379.41 Z" fill="rgb(0, 0, 0)"
                   stroke="rgb(0, 0, 0)" stroke-miterlimit="10" pointer-events="none"/>
         </g>
         <g id="cell-jFwSVuXmzfNkv6zsEyJq-51"
@@ -444,7 +444,7 @@
         <g id="cell-jFwSVuXmzfNkv6zsEyJq-58"
            content="&lt;object label=&quot;&quot; event-flow-viz-path-name=&quot;fraud-detector-to-broker&quot;/&gt;"
            data-label="" data-event-flow-viz-path-name="fraud-detector-to-broker">
-            <path d="M 849.28 132.23 L 571.03 132.21 L 571 215" fill="none" stroke="#ff00ff" stroke-miterlimit="10"
+            <path d="M 849.28 132.23 L 571 132.2 L 571 215" fill="none" stroke="#ff00ff" stroke-miterlimit="10"
                   pointer-events="none"/>
         </g>
         <g id="cell-jFwSVuXmzfNkv6zsEyJq-59"
@@ -453,10 +453,82 @@
             <path d="M 747.5 382.68 L 850 382.68" fill="none" stroke="#ff00ff" stroke-miterlimit="10"
                   pointer-events="none"/>
         </g>
+        <g id="cell-ba0HZjw4tilkWLfkAkMp-1">
+            <g transform="translate(-0.5 -0.5)">
+                <switch>
+                    <foreignObject pointer-events="none" width="100%" height="100%"
+                                   requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"
+                                   style="overflow: visible; text-align: left;">
+                        <div xmlns="http://www.w3.org/1999/xhtml"
+                             style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 58px; height: 1px; padding-top: 255px; margin-left: 675px;">
+                            <div data-drawio-colors="color: rgb(0, 0, 0); "
+                                 style="box-sizing: border-box; font-size: 0px; text-align: center;">
+                                <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: none; white-space: normal; overflow-wrap: normal;">
+                                    <div style="background-color:#ffffff;color:#080808;font-family:'JetBrains Mono',monospace;font-size:9.8pt;">
+                                        <pre>transaction.checked</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </foreignObject>
+                    <text x="704" y="258" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="12px"
+                          text-anchor="middle">transactio...
+                    </text>
+                </switch>
+            </g>
+        </g>
+        <g id="cell-ba0HZjw4tilkWLfkAkMp-2">
+            <g transform="translate(-0.5 -0.5)">
+                <switch>
+                    <foreignObject pointer-events="none" width="100%" height="100%"
+                                   requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"
+                                   style="overflow: visible; text-align: left;">
+                        <div xmlns="http://www.w3.org/1999/xhtml"
+                             style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 58px; height: 1px; padding-top: 415px; margin-left: 675px;">
+                            <div data-drawio-colors="color: rgb(0, 0, 0); "
+                                 style="box-sizing: border-box; font-size: 0px; text-align: center;">
+                                <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: none; white-space: normal; overflow-wrap: normal;">
+                                    <div style="background-color:#ffffff;color:#080808;font-family:'JetBrains Mono',monospace;font-size:9.8pt;">
+                                        <pre>transaction.checked</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </foreignObject>
+                    <text x="704" y="419" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="12px"
+                          text-anchor="middle">transactio...
+                    </text>
+                </switch>
+            </g>
+        </g>
+        <g id="cell-ba0HZjw4tilkWLfkAkMp-3">
+            <g transform="translate(-0.5 -0.5)">
+                <switch>
+                    <foreignObject pointer-events="none" width="100%" height="100%"
+                                   requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"
+                                   style="overflow: visible; text-align: left;">
+                        <div xmlns="http://www.w3.org/1999/xhtml"
+                             style="display: flex; align-items: unsafe center; justify-content: unsafe center; width: 58px; height: 1px; padding-top: 63px; margin-left: 691px;">
+                            <div data-drawio-colors="color: rgb(0, 0, 0); "
+                                 style="box-sizing: border-box; font-size: 0px; text-align: center;">
+                                <div style="display: inline-block; font-size: 12px; font-family: Helvetica; color: rgb(0, 0, 0); line-height: 1.2; pointer-events: none; white-space: normal; overflow-wrap: normal;">
+                                    <div style="background-color:#ffffff;color:#080808;font-family:'JetBrains Mono',monospace;font-size:9.8pt;">
+                                        <pre>transaction.created</pre>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </foreignObject>
+                    <text x="720" y="66" fill="rgb(0, 0, 0)" font-family="Helvetica" font-size="12px"
+                          text-anchor="middle">transactio...
+                    </text>
+                </switch>
+            </g>
+        </g>
     </g>
     <switch>
         <g requiredFeatures="http://www.w3.org/TR/SVG11/feature#Extensibility"/>
-        <a transform="translate(0,-5)" xlink:href="https://www.diagrams.net/doc/faq/svg-export-text-problems"
+        <a transform="translate(0,-5)" xlink:href="https://www.drawio.com/doc/faq/svg-export-text-problems"
            target="_blank">
             <text text-anchor="middle" font-size="10px" x="50%" y="100%">Text is not SVG - cannot display</text>
         </a>
