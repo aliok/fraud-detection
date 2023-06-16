@@ -20,5 +20,11 @@ kubectl apply -f config/400-notifier.yaml
 kubectl wait pod notifier --for=condition=ContainersReady --timeout=300s
 kubectl wait trigger notifier --for=condition=Ready --timeout=300s
 
+kubectl apply -f config/900-prometheus.yaml
+kubectl wait deployment prometheus-deployment --for=condition=Available --timeout=300s
+
+kubectl apply -f config/901-grafana.yaml
+kubectl wait deployment grafana --for=condition=Available --timeout=300s
+
 kubectl apply -f config/999-event-generator.yaml
-#kubectl wait pod event-generator --for=condition=ContainersReady --timeout=300s
+kubectl wait containersource event-generator --for=condition=Ready --timeout=300s
