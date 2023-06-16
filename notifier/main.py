@@ -13,10 +13,9 @@ def status():
 def log():
     event = from_http(request.headers, request.get_data())
 
-    print(f"Received event: {event}")
-
     if event.data['legitimacy'] != 'legitimate':
         # fake call to notification service
         print("Calling notification service")
+        print(f"Received event: {event}")
 
     return "", 200
