@@ -33,3 +33,6 @@ if __name__ == "__main__":
         print(f"Sending event {i}/{int(EVENT_COUNT)}: {body}")
         requests.post(SINK, json=body, headers=headers)
         time.sleep(float(INTERVAL))
+
+    while True:
+        time.sleep(1)
