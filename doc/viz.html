@@ -1,0 +1,634 @@
+<html>
+<head>
+    <style>
+        body {
+            padding: 0;
+            margin: 0;
+        }
+
+        #canvasContainer {
+            position: static;
+            display: block;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 80%;
+            text-align: center;
+            border-bottom: 1px solid red;
+        }
+    </style>
+    <script src="https://code.createjs.com/1.0.0/createjs.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script>
+
+        class BaseModel {
+            active = true;
+
+            isDeactivated() {
+                return !this.active;
+            }
+
+            async destroy(stageObject, context) {
+                // do nothing
+            }
+        }
+
+        class Play {
+            scenes = [];
+
+            _initialized = false;
+
+            isDeactivated() {
+                return false;
+            }
+
+            buildLoadResourceManifest() {
+                const resourceManifest = [];
+
+                for (let i = 0; i < this.scenes.length; i++) {
+                    this.scenes[i].addToResourceManifest(resourceManifest);
+                }
+
+                return resourceManifest;
+            }
+        }
+
+        class Scene {
+            index = 0;
+            title = "";
+            backgroundImage;
+            acts = [];
+
+            _initialized = false;
+            _bgBitmap;
+
+            isDeactivated() {
+                return false;
+            }
+
+            addToResourceManifest(resourceManifest) {
+                resourceManifest.push({id: this.getBackgroundImageResourceId(), src: this.backgroundImage});
+
+                for (let j = 0; j < this.acts.length; j++) {
+                    this.acts[j].addToResourceManifest(resourceManifest);
+                }
+            }
+
+            getBackgroundImageResourceId() {
+                return "background-scene-" + this.index;
+            }
+        }
+
+        class Act {
+            startDelay = 0;
+
+            isDeactivated() {
+                return false;
+            }
+
+            addToResourceManifest(resourceManifest) {
+                // do nothing
+            }
+
+            createStageObject() {
+                throw "Not implemented";
+            }
+        }
+
+        class EventStream extends Act {
+            streamPath;
+            streamDuration = -1;
+            streamEventCount = -1;
+            eventImage;
+            eventImageScale = 1;
+            eventFrequency;
+            eventFlowDuration;
+
+            _cachedEventImage;
+
+            _initialized = false;
+            _createdEventCount = 0;
+            _streamStartTime = 0;
+            _lastEventCreateTime = 0;
+
+
+            addToResourceManifest(resourceManifest) {
+                resourceManifest.push({id: this.eventImage, src: this.eventImage, type: createjs.LoadQueue.SVG});
+            }
+
+            createStageObject() {
+                return new StageObject(this, [
+                    EventStreamInitComponent.getInstance(),
+                    EventStreamCreateEventsComponent.getInstance(),
+                ]);
+            }
+        }
+
+        class StageObject {
+            model;
+            components = [];
+
+            constructor(model, components) {
+                this.model = model;
+                this.components = components;
+            }
+
+            async tick(delta, context) {
+                for (let i = 0; i < this.components.length; i++) {
+                    await this.components[i].tick(this, delta, context);
+                }
+            }
+
+            isDeactivated() {
+                return this.model.active === false;
+            }
+
+            async destroy(context) {
+                for (let i = 0; i < this.components.length; i++) {
+                    await this.model.destroy(this, context);
+                    await this.components[i].destroy(this, context);
+                }
+            }
+        }
+
+        // stateless
+        class StageObjectComponent {
+            async tick(stageObject, delta, context) {
+                // do nothing
+            }
+
+            async destroy(stageObject, context) {
+                // do nothing
+            }
+        }
+
+        class PlayInitComponent extends StageObjectComponent {
+            static #instance = new PlayInitComponent();
+
+            static getInstance() {
+                return PlayInitComponent.#instance;
+            }
+
+            async tick(stageObject, delta, context) {
+                const model = stageObject.model;
+                if (model._initialized) {
+                    return;
+                }
+
+                for (let i = 0; i < model.scenes.length; i++) {
+                    const scene = model.scenes[i];
+                    context.stageObjects["scene-" + scene.index] = new StageObject(scene, [SceneInitComponent.getInstance()]);
+                }
+
+                model._initialized = true;
+            }
+        }
+
+        class SceneInitComponent extends StageObjectComponent {
+            static #instance = new SceneInitComponent();
+
+            static getInstance() {
+                return SceneInitComponent.#instance;
+            }
+
+            async tick(stageObject, delta, context) {
+                /**
+                 * @type {Scene}
+                 */
+                const model = stageObject.model;
+                if (model._initialized) {
+                    return;
+                }
+
+                let bgRaw = context.resources.getResult(model.getBackgroundImageResourceId(), true);
+                const bgDoc = new DOMParser().parseFromString(bgRaw, "image/svg+xml");
+
+                context.pathMap = {};
+
+                const itemsWithPaths = bgDoc.querySelectorAll("[data-event-flow-viz-path-name]");
+                for (let i = 0; i < itemsWithPaths.length; i++) {
+                    const pathContainer = itemsWithPaths[i];
+                    const path = pathContainer.querySelector("path");
+
+                    context.pathMap[pathContainer.getAttribute("data-event-flow-viz-path-name")] = path.getAttribute("d");
+                    pathContainer.remove();
+                }
+
+                let bgSvgImg = await convertSvgDocToImg(bgDoc);
+                model._bgBitmap = new createjs.Bitmap(bgSvgImg);
+                context.stage.addChild(model._bgBitmap);
+
+                if (context.currentSceneIndex === model.index) {
+                    const canvas = context.stage.canvas;
+                    if (canvas.height / bgSvgImg.naturalHeight < canvas.width / bgSvgImg.naturalWidth) {
+                        context.scaleRatio = canvas.height / bgSvgImg.naturalHeight
+                    } else {
+                        context.scaleRatio = canvas.width / bgSvgImg.naturalWidth;
+                    }
+                    context.stage.scaleX = context.stage.scaleY = context.scaleRatio;
+                }
+
+
+                for (let i = 0; i < model.acts.length; i++) {
+                    const act = model.acts[i];
+                    context.stageObjects["scene-act-" + i] = act.createStageObject();
+                }
+                model._initialized = true;
+            }
+        }
+
+        class EventStreamInitComponent extends StageObjectComponent {
+            static #instance = new EventStreamInitComponent();
+
+            static getInstance() {
+                return EventStreamInitComponent.#instance;
+            }
+
+            async tick(stageObject, delta, context) {
+                /**
+                 * @type {EventStream}
+                 */
+                const model = stageObject.model;
+                if (model._initialized) {
+                    return;
+                }
+
+                let rawImg = context.resources.getResult(model.eventImage, true);
+                const svgDoc = new DOMParser().parseFromString(rawImg, "image/svg+xml");
+                model._cachedEventImage = await convertSvgDocToImg(svgDoc);
+
+                model._initialized = true;
+            }
+        }
+
+        class EventStreamCreateEventsComponent extends StageObjectComponent {
+            static #instance = new EventStreamCreateEventsComponent();
+
+            static getInstance() {
+                return EventStreamCreateEventsComponent.#instance;
+            }
+
+            async tick(stageObject, delta, context) {
+                /**
+                 * @type {EventStream}
+                 */
+                const model = stageObject.model;
+                if (!model._initialized) {
+                    return;
+                }
+
+                if (model._streamStartTime === 0) {
+                    model._streamStartTime = Date.now();
+                }
+
+                // consider delay first
+                if (model.startDelay > 0 && Date.now() - model._streamStartTime < model.startDelay) {
+                    return;
+                }
+
+                // consider the following:
+                // - streamDuration and eventFrequency
+                // OR
+                // - streamEventCount and eventFrequency
+
+                if (model.streamDuration > 0 && Date.now() - model._streamStartTime >= model.streamDuration) {
+                    return;
+                }
+
+                if (model.streamEventCount > 0 && model._createdEventCount >= model.streamEventCount) {
+                    return;
+                }
+
+                if (Date.now() - model._lastEventCreateTime >= model.eventFrequency) {
+                    // console.log("creating event");
+                    context.stageObjects["event-" + nextIndex()] = new StageObject(
+                        new MovingObjectModel(context.pathMap[model.streamPath], model._cachedEventImage, model.eventImageScale, model.eventFlowDuration),
+                        [
+                            MovingObjectPhysicsComponent.getInstance(),
+                            MovingObjectRendererComponent.getInstance(),
+                        ]
+                    );
+
+                    model._lastEventCreateTime = Date.now();
+                    model._createdEventCount++;
+                }
+            }
+        }
+
+        class MovingObjectModel extends BaseModel {
+            path = "";
+            image;
+            scale = 1
+            movementDuration = 1;
+
+            _bitmap;
+            _pathElement;
+            _pathLength = 0;
+            _currentPositionLength = 0;
+            _velocity = -1;
+            _image;
+            _x = 0;
+            _y = 0;
+
+            constructor(path, image, scale, movementDuration) {
+                super();
+                this.path = path;
+                this.image = image;
+                this.scale = scale;
+                this.movementDuration = movementDuration;
+            }
+        }
+
+        class MovingObjectPhysicsComponent extends StageObjectComponent {
+            static #instance = new MovingObjectPhysicsComponent();
+
+            static getInstance() {
+                return MovingObjectPhysicsComponent.#instance;
+            }
+
+            async tick(stageObject, delta, context) {
+                /**
+                 * @type {MovingObjectModel}
+                 */
+                const model = stageObject.model;
+
+                if (model._pathElement === undefined) {
+                    model._pathElement = document.createElementNS(
+                        'http://www.w3.org/2000/svg',
+                        'path'
+                    );
+                    model._pathElement.setAttribute("d", model.path);
+
+                    model._pathLength = model._pathElement.getTotalLength();
+                    model._velocity = model._pathLength / model.movementDuration;
+                }
+
+                if (model._currentPositionLength >= model._pathLength) {
+                    model.active = false;
+                    return;
+                }
+
+                model._currentPositionLength += model._velocity * delta;
+                let newPos = model._pathElement.getPointAtLength(model._currentPositionLength);
+                model._x = newPos.x;
+                model._y = newPos.y;
+            }
+        }
+
+        class MovingObjectRendererComponent extends StageObjectComponent {
+            static #instance = new MovingObjectRendererComponent();
+
+            static getInstance() {
+                return MovingObjectRendererComponent.#instance;
+            }
+
+            async tick(stageObject, delta, context) {
+                /**
+                 * @type {MovingObjectModel}
+                 */
+                const model = stageObject.model;
+
+                if (model._bitmap === undefined) {
+                    model._bitmap = new createjs.Bitmap(model.image);
+                    model._bitmap.scaleX = model._bitmap.scaleY = model.scale;
+                    model._bitmap.regX = model.image.naturalWidth / 2;
+                    model._bitmap.regY = model.image.naturalHeight / 2;
+                    context.stage.addChild(model._bitmap);
+                }
+
+                model._bitmap.x = model._x;
+                model._bitmap.y = model._y;
+            }
+
+            async destroy(stageObject, context) {
+                // TODO: fade out perhaps?
+                console.log("MovingObjectRendererComponent destroy");
+                /**
+                 * @type {MovingObjectModel}
+                 */
+                const model = stageObject.model;
+
+                context.stage.removeChild(model._bitmap);
+            }
+        }
+
+        const BASE_FREQUENCY = 30000;
+        const BASE_EVENT_FLOW_DURATION = 2000;
+
+        const internetToPosEventStream = new EventStream();
+        internetToPosEventStream.startDelay = 0;
+        internetToPosEventStream.streamEventCount = -1;
+        internetToPosEventStream.streamDuration = -1;
+        internetToPosEventStream.streamPath = "internet-to-pos";
+        internetToPosEventStream.eventFlowDuration = BASE_EVENT_FLOW_DURATION;
+        internetToPosEventStream.eventFrequency = BASE_FREQUENCY;
+        internetToPosEventStream.eventImage = "jsonEvent.svg";
+        internetToPosEventStream.eventImageScale = 1;
+
+        const posToTriggerEventStream = new EventStream();
+        posToTriggerEventStream.startDelay = internetToPosEventStream.eventFlowDuration;
+        posToTriggerEventStream.streamEventCount = -1;
+        posToTriggerEventStream.streamDuration = -1;
+        posToTriggerEventStream.streamPath = "pos-to-trigger";
+        posToTriggerEventStream.eventFlowDuration = BASE_EVENT_FLOW_DURATION * 2;
+        posToTriggerEventStream.eventFrequency = BASE_FREQUENCY;
+        posToTriggerEventStream.eventImage = "cloudEvent.svg";
+        posToTriggerEventStream.eventImageScale = 1;
+
+        const triggerToFraudDetectorEventStream = new EventStream();
+        triggerToFraudDetectorEventStream.startDelay = posToTriggerEventStream.startDelay + posToTriggerEventStream.eventFlowDuration;
+        triggerToFraudDetectorEventStream.streamEventCount = -1;
+        triggerToFraudDetectorEventStream.streamDuration = -1;
+        triggerToFraudDetectorEventStream.streamPath = "trigger-to-fraud-detector";
+        triggerToFraudDetectorEventStream.eventFlowDuration = BASE_EVENT_FLOW_DURATION;
+        triggerToFraudDetectorEventStream.eventFrequency = BASE_FREQUENCY;
+        triggerToFraudDetectorEventStream.eventImage = "cloudEvent.svg";
+        triggerToFraudDetectorEventStream.eventImageScale = 1;
+
+        const fraudDetectorToBrokerEventStream = new EventStream();
+        fraudDetectorToBrokerEventStream.startDelay = triggerToFraudDetectorEventStream.startDelay + triggerToFraudDetectorEventStream.eventFlowDuration;
+        fraudDetectorToBrokerEventStream.streamEventCount = -1;
+        fraudDetectorToBrokerEventStream.streamDuration = -1;
+        fraudDetectorToBrokerEventStream.streamPath = "fraud-detector-to-broker";
+        fraudDetectorToBrokerEventStream.eventFlowDuration = BASE_EVENT_FLOW_DURATION* 2;
+        fraudDetectorToBrokerEventStream.eventFrequency = BASE_FREQUENCY;
+        fraudDetectorToBrokerEventStream.eventImage = "cloudEvent.svg";
+        fraudDetectorToBrokerEventStream.eventImageScale = 1;
+
+        const fraudDetectorToLoggerTriggerEventStream = new EventStream();
+        fraudDetectorToLoggerTriggerEventStream.startDelay = fraudDetectorToBrokerEventStream.startDelay + fraudDetectorToBrokerEventStream.eventFlowDuration;
+        fraudDetectorToLoggerTriggerEventStream.streamEventCount = -1;
+        fraudDetectorToLoggerTriggerEventStream.streamDuration = -1;
+        fraudDetectorToLoggerTriggerEventStream.streamPath = "broker-to-logger-trigger";
+        fraudDetectorToLoggerTriggerEventStream.eventFlowDuration = BASE_EVENT_FLOW_DURATION* 2;
+        fraudDetectorToLoggerTriggerEventStream.eventFrequency = BASE_FREQUENCY;
+        fraudDetectorToLoggerTriggerEventStream.eventImage = "cloudEvent.svg";
+        fraudDetectorToLoggerTriggerEventStream.eventImageScale = 1;
+
+        const fraudDetectorToFraudNotifierTriggerEventStream = new EventStream();
+        fraudDetectorToFraudNotifierTriggerEventStream.startDelay = fraudDetectorToBrokerEventStream.startDelay + fraudDetectorToBrokerEventStream.eventFlowDuration;
+        fraudDetectorToFraudNotifierTriggerEventStream.streamEventCount = -1;
+        fraudDetectorToFraudNotifierTriggerEventStream.streamDuration = -1;
+        fraudDetectorToFraudNotifierTriggerEventStream.streamPath = "broker-to-fraud-notifier-trigger";
+        fraudDetectorToFraudNotifierTriggerEventStream.eventFlowDuration = BASE_EVENT_FLOW_DURATION* 2;
+        fraudDetectorToFraudNotifierTriggerEventStream.eventFrequency = BASE_FREQUENCY;
+        fraudDetectorToFraudNotifierTriggerEventStream.eventImage = "cloudEvent.svg";
+        fraudDetectorToFraudNotifierTriggerEventStream.eventImageScale = 1;
+
+        const triggerToLoggerEventStream = new EventStream();
+        triggerToLoggerEventStream.startDelay = fraudDetectorToFraudNotifierTriggerEventStream.startDelay + fraudDetectorToFraudNotifierTriggerEventStream.eventFlowDuration;
+        triggerToLoggerEventStream.streamEventCount = -1;
+        triggerToLoggerEventStream.streamDuration = -1;
+        triggerToLoggerEventStream.streamPath = "trigger-to-logger";
+        triggerToLoggerEventStream.eventFlowDuration = BASE_EVENT_FLOW_DURATION;
+        triggerToLoggerEventStream.eventFrequency = BASE_FREQUENCY;
+        triggerToLoggerEventStream.eventImage = "cloudEvent.svg";
+        triggerToLoggerEventStream.eventImageScale = 1;
+
+        const triggerToFraudNotifierEventStream = new EventStream();
+        triggerToFraudNotifierEventStream.startDelay = fraudDetectorToFraudNotifierTriggerEventStream.startDelay + fraudDetectorToFraudNotifierTriggerEventStream.eventFlowDuration;
+        triggerToFraudNotifierEventStream.streamEventCount = -1;
+        triggerToFraudNotifierEventStream.streamDuration = -1;
+        triggerToFraudNotifierEventStream.streamPath = "trigger-to-fraud-notifier";
+        triggerToFraudNotifierEventStream.eventFlowDuration = BASE_EVENT_FLOW_DURATION;
+        triggerToFraudNotifierEventStream.eventFrequency = BASE_FREQUENCY;
+        triggerToFraudNotifierEventStream.eventImage = "cloudEvent.svg";
+        triggerToFraudNotifierEventStream.eventImageScale = 1;
+
+        const scene1 = new Scene();
+        scene1.title = "More stuff";
+        scene1.backgroundImage = "test04_b.svg";
+        scene1.acts = [
+            internetToPosEventStream,
+            posToTriggerEventStream,
+            triggerToFraudDetectorEventStream,
+            fraudDetectorToBrokerEventStream,
+            fraudDetectorToLoggerTriggerEventStream,
+            fraudDetectorToFraudNotifierTriggerEventStream,
+            triggerToLoggerEventStream,
+            triggerToFraudNotifierEventStream,
+        ];
+
+        const play = new Play();
+        play.scenes = [scene1];
+
+        async function init() {
+            const resourceManifest = play.buildLoadResourceManifest();
+            // TODO: handle errors
+            const resources = await loadResources(resourceManifest);
+
+            const canvas = createMainCanvas();
+            const stage = new createjs.Stage(canvas);
+
+            const context = {
+                canvas: canvas,
+                stage: stage,
+                currentSceneIndex: 0,
+                stageObjects: {
+                    "play": new StageObject(play, [PlayInitComponent.getInstance()]),
+                },
+                resources: resources,
+                scaleRatio: 2,
+                pathMap: {},
+            };
+
+            // play.initialize(context);
+
+            createjs.Ticker.paused = true;
+            createjs.Ticker.removeAllEventListeners("tick");
+            createjs.Ticker.addEventListener("tick", function (event) {
+                if (createjs.Ticker.paused) {
+                    return;
+                }
+                tick(event.delta, context);
+            });
+            createjs.Ticker.framerate = 60;
+            createjs.Ticker.timingMode = createjs.Ticker.RAF;
+            // createjs.Ticker.framerate = 5;
+            // createjs.Ticker.timingMode = createjs.Ticker.RAF_SYNCHED;
+
+            // TODO: start paused maybe? or have it in the model?
+            createjs.Ticker.paused = false;
+        }
+
+        async function tick(delta, context) {
+            // console.log("tick", delta, context);
+            for (let key in context.stageObjects) {
+                if (context.stageObjects[key].isDeactivated()) {
+                    await context.stageObjects[key].destroy(context);
+                    delete context.stageObjects[key];
+                    continue
+                }
+
+                await context.stageObjects[key].tick(delta, context);
+            }
+            context.stage.update();
+        }
+
+        async function loadResources(manifest) {
+            return new Promise((resolve, reject) => {
+                let queue = new createjs.LoadQueue();
+                queue.on("complete", handleComplete, this);
+                queue.loadManifest(manifest);
+
+                function handleComplete() {
+                    console.log("Resources loaded");
+                    resolve(queue);
+                }
+
+                queue.on("error", function (event) {
+                    console.log("Error loading resources");
+                    reject(event);
+                });
+            });
+        }
+
+        function createMainCanvas() {
+            const $canvasContainer = $("#canvasContainer");
+
+            const canvas = document.createElement("canvas");
+            const $canvas = $(canvas);
+            $canvas.attr("id", "mainCanvas");
+
+            canvas.width = $canvasContainer.width();
+            canvas.height = $canvasContainer.height();
+
+            $canvasContainer.append(canvas);
+
+            return canvas;
+        }
+
+        async function convertSvgDocToImg(svgXmlDoc) {
+            return new Promise((resolve, reject) => {
+                let file = new File([svgXmlDoc.rootElement.outerHTML], 'svg.svg', {
+                    type: "image/svg+xml"
+                });
+                let reader = new FileReader();
+                reader.addEventListener('load', e => {
+                    let img = new Image();
+                    img.src = e.target.result;
+                    resolve(img);
+                });
+                reader.addEventListener('error', e => {
+                    reject(e);
+                })
+                // read the file as a data URL
+                reader.readAsDataURL(file);
+            });
+        }
+
+        let currentIndex = 1000;
+
+        function nextIndex() {
+            return currentIndex++;
+        }
+
+
+    </script>
+</head>
+<body onLoad="init();">
+<div id="canvasContainer" class="blurred">
+</div>
+<button id="playButton" onclick="createjs.Ticker.paused = !createjs.Ticker.paused;">Toggle</button>
+</body>
+</html>
