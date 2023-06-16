@@ -20,6 +20,8 @@ def status():
 
 @application.route('/', methods=['POST'])
 def pos():
+    print(f"Received event: {request.data}")
+
     data = request.data or '{}'
     body = json.loads(data)
 

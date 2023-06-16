@@ -1,0 +1,22 @@
+apiVersion: sources.knative.dev/v1
+kind: ContainerSource
+metadata:
+  name: event-generator
+spec:
+  template:
+    spec:
+      containers:
+        - image: aliok/event-generator
+          name: event-generator
+          imagePullPolicy: Always
+          env:
+            - name: EVENT_COUNT
+              value: "1000"
+            - name: INTERVAL
+              value: "0.1"
+  sink:
+    ref:
+      apiVersion: v1
+      kind: Service
+      name: point-of-sales
+

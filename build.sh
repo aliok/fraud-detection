@@ -12,8 +12,6 @@ docker build . -t aliok/event-generator:latest
 docker push aliok/event-generator:latest
 cd ..
 
-
-
 cd notifier
 docker build . -t aliok/notifier:latest
 docker push aliok/notifier:latest

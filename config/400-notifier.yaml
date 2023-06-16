@@ -1,0 +1,52 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  name: notifier
+  namespace: default
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 9000
+  selector:
+    run: notifier
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: notifier
+  name: notifier
+  namespace: default
+spec:
+  containers:
+    - image: aliok/notifier
+      name: notifier
+      imagePullPolicy: Always
+      ports:
+        - containerPort: 9000
+      resources: {}
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}
+---
+apiVersion: eventing.knative.dev/v1
+kind: Trigger
+metadata:
+  name: notifier
+  namespace: default
+spec:
+  broker: default
+  filter:
+    attributes:
+      type: com.example.transaction.checked
+  subscriber:
+    ref:
+      apiVersion: v1
+      kind: Service
+      name: notifier
+

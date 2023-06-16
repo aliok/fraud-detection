@@ -8,3 +8,9 @@ Fields:
 ```
 trans_type:  'online', 'contactless', 'chip_and_pin', 'manual', 'swipe'
 ```
+
+```shell
+./build.sh
+./clean.sh
+./deploy.sh
+```

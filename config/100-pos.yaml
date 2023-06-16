@@ -1,0 +1,42 @@
+apiVersion: v1
+kind: Service
+metadata:
+  creationTimestamp: null
+  name: point-of-sales
+  namespace: default
+spec:
+  ports:
+    - port: 80
+      protocol: TCP
+      targetPort: 9000
+  selector:
+    run: point-of-sales
+status:
+  loadBalancer: {}
+---
+apiVersion: v1
+kind: Pod
+metadata:
+  creationTimestamp: null
+  labels:
+    run: point-of-sales
+  name: point-of-sales
+  namespace: default
+spec:
+  containers:
+    - image: aliok/point-of-sales
+      name: point-of-sales
+      imagePullPolicy: Always
+      ports:
+        - containerPort: 9000
+      resources: {}
+      env:
+        - name: BROKER_URL
+          value: "http://kafka-broker-ingress.knative-eventing.svc.cluster.local/default/default"
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+  dnsPolicy: ClusterFirst
+  restartPolicy: Always
+status: {}

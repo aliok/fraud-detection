@@ -20,6 +20,8 @@ if __name__ == "__main__":
 
     signal.signal(signal.SIGINT, signal_handler)
 
+    print(f"Sending {EVENT_COUNT} events to {SINK} with interval {INTERVAL}")
+
     for i in range(int(EVENT_COUNT)):
         body = {
             "user_id": random.randint(1, 1000),
@@ -29,5 +31,5 @@ if __name__ == "__main__":
             "event_index": i,
         }
         print(f"Sending event {i}/{int(EVENT_COUNT)}: {body}")
-        requests.post(SINK, data=body, headers=headers)
+        requests.post(SINK, json=body, headers=headers)
         time.sleep(float(INTERVAL))
